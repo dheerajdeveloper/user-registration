@@ -1,0 +1,5 @@
+export SERVICE_PATH='/dheeraj/user-registration/user-registration'
+cd $SERVICE_PATH'/bin'
+
+export PROFILE_OPTS='-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector'
+nohup java  -jar -Xms1G -Xmx1G -XX:MaxDirectMemorySize=1024m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/user-registration/logs/oomdump -XX:NewRatio=5 -XX:+UseG1GC -XX:InitiatingHeapOccupancyPercent=30 -XX:+AggressiveOpts -XX:+UseFastAccessorMethods -Xss256k -XX:+UseCompressedOops -XX:+UseBiasedLocking -XX:+PrintTenuringDistribution -XX:+PrintGCDateStamps -Xloggc:/paytm/logs/GCLog/gc-$(date +%Y%m%d-%H%M%S).log -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=20 -XX:GCLogFileSize=10M $PROFILE_OPTS  ../lib/user-registration-*.jar > nohup.out 2>&1 < /dev/null &

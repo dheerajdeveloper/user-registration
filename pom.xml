@@ -128,6 +128,39 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <echo message="+---------------------------------------------------+"/>
+                                <echo message="    copying package to user-registration"/>
+                                <echo message="+---------------------------------------------------+"/>
+                                <copy todir="${project.build.directory}/user-registration/lib/"
+                                      overwrite="true">
+                                    <fileset dir="${project.build.directory}/">
+                                        <include name="*.jar"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${project.build.directory}/user-registration/bin/"
+                                      overwrite="false">
+                                    <fileset dir="${basedir}/script">
+                                        <include name="**/*"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
