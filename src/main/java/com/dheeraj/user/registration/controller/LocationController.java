@@ -29,4 +29,27 @@ public class LocationController {
 
     }
 
+    @GetMapping("getLatestLocationForUser")
+    public Location getLatestLocationForUser(@RequestParam("userId") long userId) {
+        return locationService.getLatestLocationForUser(userId);
+
+    }
+
+    @GetMapping("getLocationForUserForLastNMinute")
+    public List<Location> getLocationForUserForLastNMinute(@RequestParam("userId") long userId,
+                                                           @RequestParam("minute") int minute) {
+        return locationService.getLocationForUserForLastNMinute(userId, minute);
+
+    }
+
+    @GetMapping("getLocationForUserForTimeRange")
+    public List<Location> getLocationForUserForTimeRange(@RequestParam("userId") long userId,
+                                                         @RequestParam("starttime") String starttime,
+                                                         @RequestParam("endtime") String endtime) {
+        return locationService.getLocationForUserForTimeRange(userId, starttime , endtime);
+
+    }
+
+
+
 }

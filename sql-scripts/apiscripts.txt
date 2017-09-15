@@ -1,0 +1,4 @@
+http://35.154.229.180:8090/user-registration/location/getLatestLocationForUser?userId=1
+
+http://35.154.229.180:8090/user-registration/location/getLocationForUserForTimeRange?userId=1&starttime=2017-09-15%2017:00:00&endtime=2017-09-15%2017:04:00
+
