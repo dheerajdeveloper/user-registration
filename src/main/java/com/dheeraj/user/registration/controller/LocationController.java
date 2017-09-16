@@ -3,8 +3,13 @@ package com.dheeraj.user.registration.controller;
 import com.dheeraj.user.registration.model.Location;
 import com.dheeraj.user.registration.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,18 +40,28 @@ public class LocationController {
 
     }
 
-    @GetMapping("getLocationForUserForLastNMinute")
-    public List<Location> getLocationForUserForLastNMinute(@RequestParam("userId") long userId,
+    @GetMapping(value = "getLocationForUserForLastNMinute" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody  List<Location> getLocationForUserForLastNMinute(@RequestParam("userId") long userId,
                                                            @RequestParam("minute") int minute) {
-        return locationService.getLocationForUserForLastNMinute(userId, minute);
+        List<Location> locationList = locationService.getLocationForUserForLastNMinute(userId, minute);
+
+        return locationList;
 
     }
 
-    @GetMapping("getLocationForUserForTimeRange")
-    public List<Location> getLocationForUserForTimeRange(@RequestParam("userId") long userId,
+    @GetMapping(value = "getLocationForUserForTimeRange" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody List<Location> getLocationForUserForTimeRange(@RequestParam("userId") long userId,
                                                          @RequestParam("starttime") String starttime,
                                                          @RequestParam("endtime") String endtime) {
-        return locationService.getLocationForUserForTimeRange(userId, starttime , endtime);
+        List<Location> locationList =  locationService.getLocationForUserForTimeRange(userId, starttime , endtime);
+
+        if(CollectionUtils.isEmpty(locationList)){
+            locationList = new ArrayList<>();
+        }
+
+        System.out.println("Total number of location models for getLocationForUserForTimeRange " + locationList.size());
+
+        return locationList;
 
     }
 
