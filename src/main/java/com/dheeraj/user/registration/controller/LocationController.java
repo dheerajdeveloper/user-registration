@@ -1,11 +1,10 @@
 package com.dheeraj.user.registration.controller;
 
 import com.dheeraj.user.registration.model.Location;
+import com.dheeraj.user.registration.model.pojo.AddressChunk;
 import com.dheeraj.user.registration.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,22 +39,35 @@ public class LocationController {
 
     }
 
-    @GetMapping(value = "getLocationForUserForLastNMinute" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody  List<Location> getLocationForUserForLastNMinute(@RequestParam("userId") long userId,
-                                                           @RequestParam("minute") int minute) {
+    @GetMapping(value = "getLocationForUserForLastNMinute", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<Location> getLocationForUserForLastNMinute(@RequestParam("userId") long userId,
+                                                    @RequestParam("minute") int minute) {
         List<Location> locationList = locationService.getLocationForUserForLastNMinute(userId, minute);
 
         return locationList;
 
     }
 
-    @GetMapping(value = "getLocationForUserForTimeRange" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody List<Location> getLocationForUserForTimeRange(@RequestParam("userId") long userId,
-                                                         @RequestParam("starttime") String starttime,
-                                                         @RequestParam("endtime") String endtime) {
-        List<Location> locationList =  locationService.getLocationForUserForTimeRange(userId, starttime , endtime);
 
-        if(CollectionUtils.isEmpty(locationList)){
+    @GetMapping(value = "getAddressForUserForLastNMinute", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<AddressChunk> getAddressForUserForLastNMinute(@RequestParam("userId") long userId,
+                                                    @RequestParam("minute") int minute) {
+        List<AddressChunk> locationList = locationService.getAddressForUserForLastNMinute(userId, minute);
+
+        return locationList;
+
+    }
+
+    @GetMapping(value = "getLocationForUserForTimeRange", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<Location> getLocationForUserForTimeRange(@RequestParam("userId") long userId,
+                                                  @RequestParam("starttime") String starttime,
+                                                  @RequestParam("endtime") String endtime) {
+        List<Location> locationList = locationService.getLocationForUserForTimeRange(userId, starttime, endtime);
+
+        if (CollectionUtils.isEmpty(locationList)) {
             locationList = new ArrayList<>();
         }
 
@@ -65,6 +77,45 @@ public class LocationController {
 
     }
 
+
+    @GetMapping(value = "getAddressForUserForTimeRange", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<AddressChunk> getAddressForUserForTimeRange(@RequestParam("userId") long userId,
+                                                  @RequestParam("starttime") String starttime,
+                                                  @RequestParam("endtime") String endtime) {
+        List<AddressChunk> locationList = locationService.getAddressForUserForTimeRange(userId, starttime, endtime);
+
+        if (CollectionUtils.isEmpty(locationList)) {
+            locationList = new ArrayList<>();
+        }
+
+        System.out.println("Total number of location models for getAddressForUserForTimeRange " + locationList.size());
+
+        return locationList;
+
+    }
+
+
+
+    @GetMapping(value = "getLocationForUserForLastNDay", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<Location> getLocationForUserForLastNDay(@RequestParam("userId") long userId,
+                                                    @RequestParam("day") int day) {
+        List<Location> locationList = locationService.getLocationForUserForLastNDay(userId, day);
+
+        return locationList;
+
+    }
+
+    @GetMapping(value = "getAddressForUserForLastNDay", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<AddressChunk> getAddressForUserForLastNDay(@RequestParam("userId") long userId,
+                                                    @RequestParam("day") int day) {
+        List<AddressChunk> locationList = locationService.getAddressForUserForLastNDay(userId, day);
+
+        return locationList;
+
+    }
 
 
 }

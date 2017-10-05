@@ -20,7 +20,15 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     List<Location> findAllByUserIdAndLocationtimeIsAfterOrderByLocationtimeDesc(@Param("userId") long userId ,
                                                                                 @Param("locationtime") String locationtime);
 
+
+    List<Location> findAllByUserIdAndLocationtimeIsAfterOrderByLocationtimeAsc(@Param("userId") long userId ,
+                                                                                @Param("locationtime") String locationtime);
+
     List<Location> findAllByUserIdAndLocationtimeIsBetweenOrderByLocationtimeDesc(@Param("userId") long userId ,
                                                            @Param("starttime") String starttime,
                                                            @Param("endtime") String endtime);
+
+    List<Location> findAllByLocationScannedIsNullOrderByLocationtime();
+
+    Location findFirstByIdIsLessThanAndLocationScannedIsNotNullOrderByIdDesc(@Param("id") long id);
 }
