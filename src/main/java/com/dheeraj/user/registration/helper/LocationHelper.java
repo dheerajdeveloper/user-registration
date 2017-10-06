@@ -26,53 +26,21 @@ public class LocationHelper {
 
         List<AddressChunk> addressChunkList = new ArrayList<>();
         Map<String, Integer> addressCountMap = new HashMap<>();
-        TreeMap<Integer, String> countAddressMap = new TreeMap<>();
         Integer count = 0;
         DateTime prevDateTime = DateUtil.convertToJodaTime(locationList.get(0).getLocationtime());
         DateTime nextDateTime = prevDateTime.plusSeconds(Constants.CHUNK_SECONDS);
-
+        DateTime currTime = null;
         for (int i = 1; i < locationList.size(); i++) {
             Location location = locationList.get(i);
             String address = location.getAddress();
 
-            DateTime currTime = DateUtil.convertToJodaTime(location.getLocationtime());
+            currTime = DateUtil.convertToJodaTime(location.getLocationtime());
 
 
             if (currTime.isAfter(nextDateTime)) {
 
-                AddressChunk addressChunk = new AddressChunk();
 
-                addressChunk.setStartTime(DateUtil.convertToString(prevDateTime));
-                addressChunk.setEndTime(DateUtil.convertToString(currTime));
-
-                if (CollectionUtils.isEmpty(addressCountMap)) {
-                    addressChunk.setUserStatus(UserStatus.UNKNOWN);
-                } else {
-
-                    for (Map.Entry<String, Integer> entry : addressCountMap.entrySet()) {
-                        countAddressMap.put(entry.getValue(), entry.getKey());
-                    }
-
-                    if (countAddressMap.size() > Constants.MAX_LIMIT_CHUNK_ENTRIES) {
-
-                        addressChunk.setUserStatus(UserStatus.MOVING);
-
-                    } else {
-
-                        ArrayList<String> probableAddresses = getProbableAddress(countAddressMap, count);
-                        boolean allPointsNear = checkIfAllPointsNear(probableAddresses);
-                        if (allPointsNear) {
-                            addressChunk.setUserStatus(UserStatus.STATIC);
-                            addressChunk.setAddress(countAddressMap.firstEntry().getValue());
-                        } else {
-                            addressChunk.setUserStatus(UserStatus.MOVING);
-                        }
-
-                    }
-                }
-
-
-                addressChunkList.add(addressChunk);
+                addressChunkList.add(addAddressChunk(prevDateTime, currTime, addressCountMap, count));
 
 
                 /**
@@ -83,7 +51,9 @@ public class LocationHelper {
 
                 prevDateTime = currTime;
                 nextDateTime = prevDateTime.plusSeconds(Constants.CHUNK_SECONDS);
-            } else if (address != null) {
+                addressCountMap = new HashMap<>();
+                count = 0;
+            } else if (address != null && !"null".equalsIgnoreCase(address)) {
                 if (!addressCountMap.containsKey(address)) {
                     addressCountMap.put(address, 0);
                 }
@@ -96,17 +66,59 @@ public class LocationHelper {
             }
 
         }
-
+        if (currTime.isAfter(prevDateTime)) {
+            addressChunkList.add(addAddressChunk(prevDateTime, currTime, addressCountMap, count));
+        }
         return addressChunkList;
     }
 
-    private ArrayList<String> getProbableAddress(TreeMap<Integer, String> countAddressMap, Integer count) {
+    private AddressChunk addAddressChunk(DateTime prevDateTime, DateTime currTime, Map<String, Integer> addressCountMap, Integer count) {
+        AddressChunk addressChunk = new AddressChunk();
+        TreeMap<Integer, String> countAddressMap = new TreeMap<>(Collections.reverseOrder());
+
+        addressChunk.setStartTime(DateUtil.convertToString(prevDateTime));
+        addressChunk.setEndTime(DateUtil.convertToString(currTime));
+
+        if (CollectionUtils.isEmpty(addressCountMap)) {
+            addressChunk.setUserStatus(UserStatus.UNKNOWN);
+        } else {
+
+            for (Map.Entry<String, Integer> entry : addressCountMap.entrySet()) {
+                countAddressMap.put(entry.getValue(), entry.getKey());
+            }
+
+
+            ArrayList<String> probableAddresses = getMajorityAddressList(countAddressMap, count);
+            if (probableAddresses.size() > Constants.MAX_LIMIT_CHUNK_ENTRIES) {
+
+                addressChunk.setUserStatus(UserStatus.MOVING);
+
+            } else {
+
+                boolean allPointsNear = checkIfAllPointsNear(probableAddresses);
+                if (allPointsNear) {
+                    addressChunk.setUserStatus(UserStatus.STATIC);
+                    addressChunk.setAddress(countAddressMap.firstEntry().getValue());
+                } else {
+                    addressChunk.setUserStatus(UserStatus.MOVING);
+                }
+
+            }
+        }
+
+        return addressChunk;
+
+    }
+
+    private ArrayList<String> getMajorityAddressList(TreeMap<Integer, String> countAddressMap, Integer count) {
         int currCount = 0;
         ArrayList<String> addressList = new ArrayList<>();
         for (Map.Entry<Integer, String> entry : countAddressMap.entrySet()) {
+            addressList.add(entry.getValue());
+
             currCount += entry.getKey();
-            if (((currCount * 100) / count) < Constants.PERCENTAGE_LIMIT) {
-                addressList.add(entry.getValue());
+            if (((currCount * 100) / count) > Constants.MAJORITY_PERCENTAGE_LIMIT) {
+                break;
             }
         }
 
@@ -144,46 +156,65 @@ public class LocationHelper {
     }
 
     public List<AddressChunk> mergeCommonAddressChunks(List<AddressChunk> addressChunkList) {
+        if (CollectionUtils.isEmpty(addressChunkList)) {
+            return new ArrayList<>();
+        }
+
+        if (addressChunkList.size() == 1) {
+            return addressChunkList;
+        }
 
         List<AddressChunk> addressChunkMerged = new ArrayList<>();
-        AddressChunk previousAddressChunk = null;
-        for (AddressChunk currAddressChunk : addressChunkList) {
-
-            if (previousAddressChunk == null) {
-                previousAddressChunk = currAddressChunk;
-                continue;
-            }
+        AddressChunk previousAddressChunk = addressChunkList.get(0);
+        AddressChunk currAddressChunk = null;
+        int size = addressChunkList.size();
+        for (int i = 1; i < addressChunkList.size(); i++) {
+            currAddressChunk = addressChunkList.get(i);
 
             if (!previousAddressChunk.getUserStatus().equals(currAddressChunk.getUserStatus())) {
+                addressChunkMerged.add(addNewAddressChunk(previousAddressChunk, currAddressChunk));
+
+                previousAddressChunk = currAddressChunk;
+            } else if (currAddressChunk.getUserStatus().equals(UserStatus.STATIC) &&
+                    !currAddressChunk.getAddress().equalsIgnoreCase(previousAddressChunk.getAddress())) {
                 AddressChunk newAddressChunk = new AddressChunk();
+                newAddressChunk.setAddress(previousAddressChunk.getAddress());
+                newAddressChunk.setUserStatus(UserStatus.STATIC);
                 newAddressChunk.setStartTime(previousAddressChunk.getStartTime());
                 newAddressChunk.setEndTime(currAddressChunk.getStartTime());
-                if (previousAddressChunk.getUserStatus().equals(UserStatus.MOVING)) {
-                    newAddressChunk.setUserStatus(UserStatus.MOVING);
-                } else if (previousAddressChunk.getUserStatus().equals(UserStatus.UNKNOWN)) {
-                    newAddressChunk.setUserStatus(UserStatus.UNKNOWN);
-                } else {
-                    newAddressChunk.setAddress(previousAddressChunk.getAddress());
-                    newAddressChunk.setUserStatus(UserStatus.STATIC);
-                }
+
                 addressChunkMerged.add(newAddressChunk);
                 previousAddressChunk = currAddressChunk;
-            } else {
-                if (currAddressChunk.getUserStatus().equals(UserStatus.STATIC) &&
-                        !currAddressChunk.getAddress().equalsIgnoreCase(previousAddressChunk.getAddress())) {
-                    AddressChunk newAddressChunk = new AddressChunk();
-                    newAddressChunk.setAddress(previousAddressChunk.getAddress());
-                    newAddressChunk.setUserStatus(UserStatus.STATIC);
-                    newAddressChunk.setStartTime(previousAddressChunk.getStartTime());
-                    newAddressChunk.setEndTime(currAddressChunk.getStartTime());
-
-                    addressChunkMerged.add(newAddressChunk);
-                    previousAddressChunk = currAddressChunk;
-                }
+            } else if (i == size - 1) {
+                //handle last address chunk
+//                if (CollectionUtils.isEmpty(addressChunkMerged)) {
+//                    previousAddressChunk.setEndTime(currAddressChunk.getEndTime());
+//                    addressChunkMerged.add(previousAddressChunk);
+//
+//                } else {
+//                    int addressChunkMergedLastIndex = addressChunkMerged.size() - 1;
+//                    addressChunkMerged.get(addressChunkMergedLastIndex).setEndTime(currAddressChunk.getEndTime());
+//                }
+                previousAddressChunk.setEndTime(currAddressChunk.getEndTime());
+                addressChunkMerged.add(previousAddressChunk);
             }
 
         }
-
         return addressChunkMerged;
+    }
+
+    private AddressChunk addNewAddressChunk(AddressChunk previousAddressChunk, AddressChunk currAddressChunk) {
+        AddressChunk newAddressChunk = new AddressChunk();
+        newAddressChunk.setStartTime(previousAddressChunk.getStartTime());
+        newAddressChunk.setEndTime(currAddressChunk.getStartTime());
+        if (previousAddressChunk.getUserStatus().equals(UserStatus.MOVING)) {
+            newAddressChunk.setUserStatus(UserStatus.MOVING);
+        } else if (previousAddressChunk.getUserStatus().equals(UserStatus.UNKNOWN)) {
+            newAddressChunk.setUserStatus(UserStatus.UNKNOWN);
+        } else {
+            newAddressChunk.setAddress(previousAddressChunk.getAddress());
+            newAddressChunk.setUserStatus(UserStatus.STATIC);
+        }
+        return newAddressChunk;
     }
 }

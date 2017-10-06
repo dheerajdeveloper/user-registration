@@ -58,12 +58,12 @@ public class LocationService {
     }
 
     public List<Location> getLocationForUserForTimeRange(long userId, String starttime, String endtime) {
-        return locationRepository.findAllByUserIdAndLocationtimeIsBetweenOrderByLocationtimeDesc(userId, starttime, endtime);
+        return locationRepository.findAllByUserIdAndLocationtimeIsBetweenOrderByLocationtimeAsc(userId, starttime, endtime);
     }
 
 
     public List<AddressChunk> getAddressForUserForTimeRange(long userId, String starttime, String endtime) {
-        return getAddressChunks(locationRepository.findAllByUserIdAndLocationtimeIsBetweenOrderByLocationtimeDesc(userId, starttime, endtime));
+        return getAddressChunks(locationRepository.findAllByUserIdAndLocationtimeIsBetweenOrderByLocationtimeAsc(userId, starttime, endtime));
     }
 
     public Location getPrevLocation(Long id) {

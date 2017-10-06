@@ -24,7 +24,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     List<Location> findAllByUserIdAndLocationtimeIsAfterOrderByLocationtimeAsc(@Param("userId") long userId ,
                                                                                 @Param("locationtime") String locationtime);
 
-    List<Location> findAllByUserIdAndLocationtimeIsBetweenOrderByLocationtimeDesc(@Param("userId") long userId ,
+    List<Location> findAllByUserIdAndLocationtimeIsBetweenOrderByLocationtimeAsc(@Param("userId") long userId ,
                                                            @Param("starttime") String starttime,
                                                            @Param("endtime") String endtime);
 
