@@ -1,6 +1,8 @@
 package com.dheeraj.user.registration;
 
 import com.dheeraj.user.registration.model.Location;
+import com.dheeraj.user.registration.model.LocationAddressMapping;
+import com.dheeraj.user.registration.repository.LocationAddressMappingRepository;
 import com.dheeraj.user.registration.repository.LocationRepository;
 import com.dheeraj.user.registration.service.LocationService;
 import com.dheeraj.user.registration.util.AddressUpdateUtil;
@@ -36,7 +38,10 @@ public class AddressUpdateTask {
     @Autowired
     LocationService locationService;
 
-//    @Scheduled(fixedRate = 5 * 60 * 1000)
+    @Autowired
+    LocationAddressMappingRepository locationAddressMappingRepository;
+
+    @Scheduled(fixedRate = 5 * 60 * 1000)
     public void updateAddress() throws Exception {
 
         Location prevLocation = null;
@@ -53,11 +58,8 @@ public class AddressUpdateTask {
                 prevLocation = locationService.getPrevLocation(location.getId());
             }
 
-            GeocodingResult geocodingResult = GoogleMapsHelper.getGeocodingResult(location);
-            if (geocodingResult != null) {
-                location.setPlaceId(geocodingResult.placeId.trim());
-                location.setAddress(geocodingResult.formattedAddress);
-            }
+            updateLocationAddress(location);
+
             /*
             if previous location is null , then we will treat current location
             as the starting location
@@ -76,9 +78,9 @@ public class AddressUpdateTask {
                  */
 
                 // if place id match then it is same location
-                if (prevLocation.getPlaceId() != null &&
-                        location.getPlaceId() != null &&
-                        prevLocation.getPlaceId().equalsIgnoreCase(location.getPlaceId())) {
+                if (prevLocation.getAddress() != null &&
+                        location.getAddress() != null &&
+                        prevLocation.getAddress().equalsIgnoreCase(location.getAddress())) {
                     location.setAddressSequence(prevLocation.getAddressSequence());
                     location.setDurationAtCurrentLocation(AddressUpdateUtil.getDurationAtLocation(prevLocation, location));
                 } else {
@@ -96,13 +98,59 @@ public class AddressUpdateTask {
             }
 
             location.setLocationScanned(1);
-            location = locationRepository.save(location);
+            try {
+                locationRepository.save(location);
+            } catch (Exception e) {
+                location.setAddress(getAsciiString(location.getAddress()));
+                locationRepository.save(location);
+
+            }
             prevLocation = location;
 
         }
 
         log.info("Successfully process all locations {}", locationList.size());
 
+
+    }
+
+    private String getAsciiString(String address) {
+        StringBuilder sb = new StringBuilder("");
+        for (int i = 0; i < address.length(); i++) {
+            if (address.charAt(i) < 128) {
+                sb.append(address.charAt(i));
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private void updateLocationAddress(Location location) {
+
+        LocationAddressMapping locationAddressMapping =
+                locationAddressMappingRepository.findFirstByLatAndLng(location.getLatitude(),
+                        location.getLongitude());
+
+        if (locationAddressMapping != null && locationAddressMapping.getAddress() != null) {
+            location.setAddress(locationAddressMapping.getAddress());
+            return;
+        }
+        GeocodingResult geocodingResult = GoogleMapsHelper.getGeocodingResult(location);
+        if (geocodingResult != null) {
+            location.setAddress(geocodingResult.formattedAddress.trim());
+        }
+
+        LocationAddressMapping locationAddressMapping1 = new LocationAddressMapping(location.getLatitude(),
+                location.getLongitude(),
+                location.getAddress());
+
+        try {
+            locationAddressMappingRepository.save(locationAddressMapping1);
+        } catch (Exception e) {
+            locationAddressMapping1.setAddress(getAsciiString(locationAddressMapping1.getAddress()));
+            locationAddressMappingRepository.save(locationAddressMapping1);
+
+        }
 
     }
 }

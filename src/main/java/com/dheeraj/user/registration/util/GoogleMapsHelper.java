@@ -37,7 +37,7 @@ public class GoogleMapsHelper {
                 return results[0];
             }
         } catch (Exception e) {
-            log.info("Exception while fetching address {}", e);
+//            log.info("Exception while fetching address {}", e);
         }
 
         return null;
