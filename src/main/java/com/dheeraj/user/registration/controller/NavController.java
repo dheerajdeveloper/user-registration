@@ -97,4 +97,46 @@ public class NavController {
         return schemeCodeMap.get(isin);
 
     }
+
+    public static void main(String[] args) {
+        String s1 = "Converse";
+        String s2 = "Conserve";
+
+        System.out.println(check(s1,s2));
+
+
+    }
+
+    private static boolean check(String s1, String s2) {
+
+        if(s1.length() != s2.length()){
+            return false;
+        }
+
+        int i=0;
+
+        int firstMismatchIndex = -1;
+        int secondMismatchIndex = -1;
+
+
+        while(i<s1.length()){
+            if(s1.charAt(i) != s2.charAt(i)){
+                if(firstMismatchIndex == -1){
+                    firstMismatchIndex = i;
+                } else if(secondMismatchIndex == -1){
+                    secondMismatchIndex = i;
+                } else {
+                    return false;
+                }
+            }
+            i++;
+        }
+
+        if(s1.charAt(firstMismatchIndex) == s2.charAt(secondMismatchIndex) &&
+                s1.charAt(secondMismatchIndex) == s2.charAt(firstMismatchIndex)){
+            return true;
+        }
+
+        return false;
+    }
 }
