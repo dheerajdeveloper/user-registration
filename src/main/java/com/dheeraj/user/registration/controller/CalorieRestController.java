@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /** Created by dheeraj on 13/09/17. */
 @RequestMapping("rest/calorie")
@@ -41,13 +42,9 @@ public class CalorieRestController {
     HttpPost httppost = new HttpPost("https://www.myfitnesspal.com/reports/printable_diary");
 
     DateTime now = new org.joda.time.DateTime();
-    now = now.minusDays(1);
     String pattern = "yyyy-MM-dd";
     DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
     String formatted = formatter.print(now);
-
-    System.out.println("formatted" + formatted);
-
     List<NameValuePair> params = new ArrayList<NameValuePair>();
     params.add(new BasicNameValuePair("username", "Dheeraj2311"));
     params.add(new BasicNameValuePair("from", "2019-01-27"));
@@ -73,9 +70,15 @@ public class CalorieRestController {
       Elements dataElements = doc.getElementsByTag("tfoot");
       for (int i = 0; i < dataElements.size(); i++) {
         Elements tdElements = dataElements.get(i).getElementsByTag("td");
+        String currentDate = dateElements.get(i).childNode(0).toString();
+        DateTimeFormatter currFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy");
+        DateTime dt = currFormatter.parseDateTime(currentDate);
+        DateTime.Property pDoW = dt.dayOfWeek();
+        String dayOfTheWeek = pDoW.getAsText(Locale.getDefault());
         dayDataList.add(
             new DayData(
                 slno++,
+                dayOfTheWeek,
                 dateElements.get(i).childNode(0).toString(),
                 getResult(tdElements, 1),
                 getResult(tdElements, 2),

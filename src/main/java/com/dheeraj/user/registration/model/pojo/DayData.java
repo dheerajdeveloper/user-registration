@@ -12,6 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class DayData {
     int slno;
+    String dayOfTheWeek;
     String date;
     int calories;
     int carbs;
@@ -25,6 +26,7 @@ public class DayData {
 
     public DayData(
             int slno,
+            String dayOfTheWeek,
             String date,
             int calories,
             int carbs,
@@ -35,6 +37,7 @@ public class DayData {
             int sugar,
             int fiber) {
         this.slno = slno;
+        this.dayOfTheWeek = dayOfTheWeek;
         this.date = date;
         this.calories = calories;
         this.carbs = carbs;

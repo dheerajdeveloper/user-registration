@@ -11,6 +11,7 @@
             <thead>
             <tr>
                 <th> serial no</th>
+                <th> day</th>
                 <th> date</th>
                 <th> calories</th>
                 <th> carbs</th>
@@ -25,6 +26,7 @@
             <tbody>
             <tr th:each="prod : ${data}">
                 <td th:text="${prod.slno}"></td>
+                <td th:text="${prod.dayOfTheWeek}"></td>
                 <td th:text="${prod.date}"></td>
                 <td th:text="${prod.calories}"></td>
                 <td th:text="${prod.carbs}"></td>
