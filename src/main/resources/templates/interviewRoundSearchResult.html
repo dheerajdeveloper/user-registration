@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>My Home Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<section layout:fragment="content">
+
+    <br>
+    <div th:replace="fragments/userDetailFragment :: header">...</div>
+
+    <br>
+
+    <table id="interviewDetail">
+        <caption><b>Intreview Details</b></caption>
+
+        <thead>
+        <tr>
+
+            <th> companyName</th>
+            <th> companyLocation</th>
+            <th> currentStatus</th>
+            <th> overallStatus</th>
+            <th> finalFeedback</th>
+            <th> createdOn</th>
+            <th> updatedOn</th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+        <tr>
+
+            <td th:text="${interview.companyName}"></td>
+            <td th:text="${interview.companyLocation}"></td>
+            <td th:text="${interview.currentStatus}"></td>
+            <td th:text="${interview.overallStatus}"></td>
+            <td th:text="${interview.finalFeedback}"></td>
+            <td th:text="${interview.createdOn}"></td>
+            <td th:text="${interview.updatedOn}"></td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <br>
+    <div th:replace="fragments/interviewRoundDetailFragment :: header">...</div>
+    <br>
+
+
+    <br>
+    <a th:href="@{'/interview-tracking/interview-round/add?interviewId=' + ${interview.id}}">Add interview Round for
+        interview</a>
+    <br>
+
+    <br>
+    <div th:replace="fragments/homepageLinkFragment :: header">...</div>
+    <br>
+
+</section>
+
+</body>
+</html>

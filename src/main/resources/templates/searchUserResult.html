@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>My Homepage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<section layout:fragment="content">
+
+    <div th:replace="fragments/userDetailFragment :: header">...</div>
+
+    <br>
+    <div th:replace="fragments/interviewDetailFragment :: header">...</div>
+    <br>
+
+
+    <br>
+    <a th:href="@{'/interview-tracking/interview/add?userId=' + ${user.id}}">Add interview for user</a>
+    <br>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</section>
+
+</body>
+</html>

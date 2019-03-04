@@ -41,7 +41,7 @@ public class AddressUpdateTask {
     @Autowired
     LocationAddressMappingRepository locationAddressMappingRepository;
 
-    @Scheduled(fixedRate = 5 * 60 * 1000)
+//    @Scheduled(fixedRate = 5 * 60 * 1000)
     public void updateAddress() throws Exception {
 
         Location prevLocation = null;

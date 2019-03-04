@@ -1,0 +1,58 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+
+<div th:fragment="header">
+    <br>
+    <div>
+
+        <table id="searchInterviewRoundResult">
+            <caption><b>Interview Round Details</b></caption>
+
+            <thead>
+            <tr>
+
+                <th> Edit</th>
+                <th> roundName</th>
+                <th> roundStatus</th>
+                <th> rounfFeedback</th>
+                <th> roundQuestions</th>
+                <th> interviewDate</th>
+                <th> createdOn</th>
+                <th> updatedOn</th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            <tr th:each="prod : ${interviewRoundList}">
+
+
+
+                <td>
+                    <a th:href="@{'/interview-tracking/interview-round/edit?interviewRoundId=' + ${prod.id}}" th:text="edit"></a>
+
+                </td>
+
+
+
+                <td th:text="${prod.roundName}"></td>
+                <td th:text="${prod.roundStatus}"></td>
+                <td th:text="${prod.rounfFeedback }"></td>
+                <td th:text="${prod.roundQuestions}"></td>
+                <td th:text="${prod.interviewDate}"></td>
+                <td th:text="${prod.createdOn}"></td>
+                <td th:text="${prod.updatedOn}"></td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+    <br>
+
+</div>
+
+</body>
+</html>

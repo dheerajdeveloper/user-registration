@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+
+<div th:fragment="header">
+    <p>Welcome to the home page of Intreviews Tracking</p>
+
+
+    <b><p>Enter User Id</p></b>
+    <form  th:action="@{/interview-tracking/searchUser}" method="get">
+        <input name="userId" >
+        <input type="submit" value="Search User"/>
+    </form>
+    <br><br>
+
+</div>
+
+</body>
+</html>

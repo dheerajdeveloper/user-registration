@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+
+<div th:fragment="header">
+    <br>
+    <div>
+
+        <table id="calorieDetailResult">
+            <caption><b>Calorie Details</b></caption>
+            <thead>
+            <tr>
+                <th> serial no</th>
+                <th> date</th>
+                <th> calories</th>
+                <th> carbs</th>
+                <th> fat</th>
+                <th> protein</th>
+                <th> cholest</th>
+                <th> sodium</th>
+                <th> sugar</th>
+                <th> fiber</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="prod : ${data}">
+                <td th:text="${prod.slno}"></td>
+                <td th:text="${prod.date}"></td>
+                <td th:text="${prod.calories}"></td>
+                <td th:text="${prod.carbs}"></td>
+                <td th:text="${prod.fat}"></td>
+                <td th:text="${prod.protein}"></td>
+                <td th:text="${prod.cholest}"></td>
+                <td th:text="${prod.sodium}"></td>
+                <td th:text="${prod.sugar}"></td>
+                <td th:text="${prod.fiber}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+</div>
+
+</body>
+</html>

@@ -33,7 +33,6 @@
         </dependency>
 
 
-
         <dependency>
 
             <groupId>net.sourceforge.tess4j</groupId>
@@ -80,22 +79,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-
-        <dependency>
-            <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity4</artifactId>
-        </dependency>
-
-        <!-- Spring Security -->
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-security</artifactId>-->
-        <!--</dependency>-->
-
-
-        <!-- Password Validation -->
 
         <!-- Spring Data JPA dependencies -->
 
@@ -148,9 +131,9 @@
 
 
         <!--<dependency>-->
-            <!--<groupId>com.google.maps</groupId>-->
-            <!--<artifactId>google-maps-services</artifactId>-->
-            <!--<version>(insert latest version)</version>-->
+        <!--<groupId>com.google.maps</groupId>-->
+        <!--<artifactId>google-maps-services</artifactId>-->
+        <!--<version>(insert latest version)</version>-->
         <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.google.maps/google-maps-services -->
@@ -161,14 +144,29 @@
         </dependency>
 
 
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.25</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.7</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.11.3</version>
+        </dependency>
 
+        <dependency>
+            <groupId>net.sourceforge.nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+            <version>1.9.22</version>
+        </dependency>
 
     </dependencies>
 

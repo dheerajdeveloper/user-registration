@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>My Home Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<section layout:fragment="content">
+
+
+
+    <br>
+    <div th:replace="fragments/interviewDetailFragment :: header">...</div>
+
+    <br>
+    <a th:href="@{'/interview-tracking/searchUser?userId=' + ${interview.userId}}">My homepage</a>
+    <br>
+
+    <br>
+    <a th:href="@{'/interview-tracking/interview/add?userId=' + ${interview.userId}}">Add one more interview for
+        user
+    </a>
+    <br>
+</section>
+
+</body>
+</html>

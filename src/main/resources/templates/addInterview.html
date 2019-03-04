@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Add a new user</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <b>Adding a new interview for the user </b> <b th:text="${interview.userId}"></b>
+
+    <br>
+
+    <form th:action=" @{/interview-tracking/interview/add}" th:object="${interview}" method="post">
+        <input type="hidden" th:field="*{id}" th:value="${interview.id}"/>
+        <input type="hidden" th:field="*{userId}" th:value="${interview.userId}"/>
+        <p>companyName: <input type="text" th:field="*{companyName}"/></p>
+        <p>companyLocation: <input type="text" th:field="*{companyLocation}"/></p>
+        <p>currentStatus: <input type="text" th:field="*{currentStatus}"/></p>
+        <p>overallStatus: <input type="text" th:field="*{overallStatus}"/></p>
+        <p>finalFeedback: <input type="text" th:field="*{finalFeedback}"/></p>
+        <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
+    </form>
+
+    <br>
+    <div th:replace="fragments/homepageLinkFragment :: header">...</div>
+    <br>
+
+</section>
+
+</body>
+
+</html>

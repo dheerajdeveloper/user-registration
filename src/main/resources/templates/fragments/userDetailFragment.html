@@ -1,0 +1,72 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+
+<div th:fragment="header">
+    <br>
+    <div>
+
+        <table id="searchUserResult">
+            <caption><b>User Details</b></caption>
+
+            <thead>
+            <tr>
+
+                <th> username</th>
+
+                <th> emailId</th>
+
+                <th> mobileNo</th>
+
+                <th> currentCompany</th>
+
+                <th> experienceYears</th>
+
+                <th> currentCtc</th>
+
+                <th> technologiesKnown</th>
+
+                <th> professionType</th>
+
+                <th> createdOn</th>
+
+                <th> updatedOn</th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            <tr>
+
+                <td th:text="${user.username}"></td>
+
+                <td th:text="${user.emailId}"></td>
+
+                <td th:text="${user.mobileNo}"></td>
+
+                <td th:text="${user.currentCompany}"></td>
+
+                <td th:text="${user.experienceYears}"></td>
+
+                <td th:text="${user.currentCtc}"></td>
+
+                <td th:text="${user.technologiesKnown}"></td>
+
+                <td th:text="${user.professionType}"></td>
+
+                <td th:text="${user.createdOn}"></td>
+
+                <td th:text="${user.updatedOn}"></td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+    <br>
+
+</div>
+
+</body>
+</html>

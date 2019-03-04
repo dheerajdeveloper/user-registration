@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+
+<div th:fragment="header">
+    <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+    <p>Welcome to the admin page of Intreviews Tracking</p>
+
+
+    <h1>Add a new user to the Interviews Tracking Website</h1>
+    <form th:action="@{/interview-tracking/admin/user/add}" th:object="${user}" method="post">
+        <p>username: <input type="text" th:field="*{username}"/></p>
+        <p>emailId: <input type="text" th:field="*{emailId}"/></p>
+        <p>mobileNo: <input type="text" th:field="*{mobileNo}"/></p>
+        <p>currentCompany: <input type="text" th:field="*{currentCompany}"/></p>
+        <p>experienceYears: <input type="text" th:field="*{experienceYears}"/></p>
+        <p>currentCtc: <input type="text" th:field="*{currentCtc}"/></p>
+        <p>technologiesKnown: <input type="text" th:field="*{technologiesKnown}"/></p>
+        <p>professionType: <input type="text" th:field="*{professionType}"/></p>
+        <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
+    </form>
+
+</div>
+
+</body>
+</html>

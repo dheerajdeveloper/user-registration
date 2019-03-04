@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Add user</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<section layout:fragment="content">
+
+
+    <h1>Result</h1>
+    <p th:text="'id: ' + ${user.id}"/>
+    <a href="/interview-tracking/user/add">add another user</a>
+</section>
+
+</body>
+</html>
